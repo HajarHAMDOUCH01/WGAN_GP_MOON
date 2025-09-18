@@ -91,11 +91,11 @@ class Generator(nn.Module):
         return x
     
 class Discriminator(nn.Module):
-    def __init__(self, use_spectral_norm=True, use_self_attention=False):
+    def __init__(self, use_spectral_norm=False, use_self_attention=False):
         super(Discriminator, self).__init__()
         self.use_self_attention = use_self_attention
 
-        def conv_block(in_ch, out_ch, use_spectral_norm=True, use_bn = False):
+        def conv_block(in_ch, out_ch, use_spectral_norm=False, use_bn = False):
             layers = [
                 nn.Conv2d(in_ch, out_ch, 4,2,1, bias=False),
                 nn.LeakyReLU(0.2, inplace=True)
