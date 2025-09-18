@@ -3,7 +3,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 import sys
-sys.path.append('/content/moon-wgan-gp/')
+sys.path.append('/content/WGAN_GP_MOON/')
 
 from config import Config
 from models import create_models
