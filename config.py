@@ -20,6 +20,12 @@ class Config:
 
     DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+    SAVE_INTERVAL = 50  
+    LOG_INTERVAL = 100 
+    SAMPLE_INTERVAL = 25  
+    MODEL_SAVE_PATH = "/content/drive/MyDrive/models/"
+    SAMPLES_SAVE_PATH = "/content/drive/MyDrive/samples/"
+
     USE_MIXED_PRECISION = True
     USE_SPECTRAL_NORM = True
     USE_SELF_ATTENTION = False

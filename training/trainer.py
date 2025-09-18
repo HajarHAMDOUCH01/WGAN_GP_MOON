@@ -29,10 +29,10 @@ class WGANGPTrainer:
         )
 
         self.scheduler_g = optim.lr_scheduler.ReduceLROnPlateau(
-            self.opt_g, mode='min', factor=0.5, patience=20, verbose=True
+            self.opt_g, mode='min', factor=0.5, patience=20
         )
         self.scheduler_d = optim.lr_scheduler.ReduceLROnPlateau(
-            self.opt_d, mode='min', factor=0.5, patience=20, verbose=True
+            self.opt_d, mode='min', factor=0.5, patience=20
         )
 
         self.scaler = torch.cuda.amp.GradScaler('cuda') if config.USE_MIXED_PRECISION else None

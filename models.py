@@ -92,7 +92,7 @@ class Generator(nn.Module):
     
 class Discriminator(nn.Module):
     def __init__(self, use_spectral_norm=True, use_self_attention=False):
-        self(Discriminator, self).__init__()
+        super(Discriminator, self).__init__()
         self.use_self_attention = use_self_attention
 
         def conv_block(in_ch, out_ch, use_spectral_norm=True, use_bn = False):
