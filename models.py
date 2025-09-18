@@ -30,7 +30,7 @@ class Generator(nn.Module):
     def __init__(self, latent_dim, use_spectral_norm=False, use_self_attention=False):
         super(Generator, self).__init__()
         self.latent_dim = latent_dim
-        self.use_self_attetion = use_self_attention
+        self.use_self_attention = use_self_attention
 
         self.initial = nn.Sequential(
             nn.Linear(latent_dim, 512*4*4),
