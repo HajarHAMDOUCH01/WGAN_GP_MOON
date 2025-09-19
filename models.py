@@ -64,7 +64,9 @@ class Generator(nn.Module):
         self.final = nn.Sequential(final_layer, nn.Tanh())
 
         self._initialize_weights()
-    
+
+
+    # this means the method is meant to be used only by the class 
     def _initialize_weights(self):
         for m in self.modules():
             if isinstance(m, (nn.ConvTranspose2d, nn.Conv2d)):
@@ -91,7 +93,7 @@ class Generator(nn.Module):
         return x
     
 class Discriminator(nn.Module):
-    def __init__(self, use_spectral_norm=False, use_self_attention=False):
+    def __init__(self, use_spectral_norm=True, use_self_attention=False):
         super(Discriminator, self).__init__()
         self.use_self_attention = use_self_attention
 

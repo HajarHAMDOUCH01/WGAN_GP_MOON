@@ -1,7 +1,7 @@
 import torch
 import torch.optim as optim
 import torchvision.utils as vutils
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import numpy as np
 import os 
 from pathlib import Path
@@ -43,7 +43,7 @@ class WGANGPTrainer:
         self.d_losses = []
         self.wasserstein_distances = []
 
-    def compute_gadient_penality(self, real_samples, fake_samples):
+    def compute_gradient_penality(self, real_samples, fake_samples):
         batch_size = real_samples.size(0)
         epsilon = torch.randn(batch_size, 1,1,1, device=self.config.DEVICE)
 
@@ -84,7 +84,7 @@ class WGANGPTrainer:
                     fake_images = self.generator(noise).detach()
                     fake_scores = self.discriminator(fake_images)
 
-                    gp = self.compute_gadient_penality(real_images, fake_images)
+                    gp = self.compute_gradient_penality(real_images, fake_images)
 
                     d_loss = -torch.mean(real_scores) + torch.mean(fake_scores) + self.config.LAMBDA_GP * gp
                 
@@ -98,7 +98,7 @@ class WGANGPTrainer:
                 fake_images = self.generator(noise).detach()
                 fake_scores = self.discriminator(fake_images)
 
-                gp = self.compute_gradient_penalty(real_images, fake_images)
+                gp = self.compute_gradient_penality(real_images, fake_images)
 
                 d_loss = -torch.mean(real_scores) + torch.mean(fake_scores) + self.config.LAMBDA_GP * gp
                 

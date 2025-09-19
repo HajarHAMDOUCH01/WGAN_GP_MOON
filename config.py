@@ -26,7 +26,7 @@ class Config:
     MODEL_SAVE_PATH = "/content/drive/MyDrive/models/"
     SAMPLES_SAVE_PATH = "/content/drive/MyDrive/samples/"
 
-    USE_MIXED_PRECISION = True
+    USE_MIXED_PRECISION = False
     USE_SPECTRAL_NORM = True
     USE_SELF_ATTENTION = False
 
