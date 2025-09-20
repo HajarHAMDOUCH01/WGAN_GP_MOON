@@ -160,6 +160,8 @@ class WGANGPTrainer:
             'discriminator_state_dict': self.discriminator.state_dict(),
             'optimizer_g_state_dict': self.opt_g.state_dict(),
             'optimizer_d_state_dict': self.opt_d.state_dict(),
+            'scheduler_g_state_dict': self.scheduler_g.state_dict(),
+            'scheduler_d_state_dict': self.scheduler_d.state_dict(),
             'g_losses': self.g_losses,
             'd_losses': self.d_losses,
             'config': self.config
@@ -188,14 +190,55 @@ class WGANGPTrainer:
         plt.savefig(f"{self.config.SAMPLES_SAVE_PATH}/training_curves.png")
         plt.show()
 
-    def train(self):
-        print(f"Starting training on {self.config.DEVICE}")
-        print(f"Number of epochs: {self.config.NUM_EPOCHS}")
-        print(f"Batch size: {self.config.BATCH_SIZE}")
+    def load_models_from_checkpoint(self, checkpoint_path):
+        print(f"Loading checkpoint from: {checkpoint_path}")
+        checkpoint = torch.load(checkpoint_path, map_location=self.config.DEVICE)
+        self.generator.to(self.config.DEVICE)
+        self.discriminator.to(self.config.DEVICE)
+        self.generator.load_state_dict(checkpoint['generator_state_dict'])
+        self.discriminator.load_state_dict(checkpoint['generator_state_dict'])
+        self.opt_g = optim.Adam(
+            self.generator.parameters(),
+            lr=self.config.LEARNING_RATE_G,
+            betas=(self.config.BETA1, self.config.BETA2)
+        )
+        self.opt_d = optim.Adam(
+            self.discriminator.parameters(),
+            lr=self.config.LEARNING_RATE_D,
+            betas=(self.config.BETA1, self.config.BETA2)
+        )
+        self.opt_g.load_state_dict(checkpoint['optimizer_g_state_dict'])
+        self.opt_d.load_state_dict(checkpoint['optimizer_d_state_dict'])
+        start_epoch = checkpoint['epoch']
+        remaining_epochs = self.config.NUM_EPOCHS - start_epoch
+        self.scheduler_g = optim.lr_scheduler.ReduceLROnPlateau(
+            self.opt_g, mode='min', factor=0.5, patience=20
+        )
+        self.scheduler_d = optim.lr_scheduler.ReduceLROnPlateau(
+            self.opt_d, mode='min', factor=0.5, patience=20
+        )
+        self.scheduler_g.load_state_dict(checkpoint['scheduler_g_state_dict'])
+        self.scheduler_g.load_state_dict(checkpoint['scheduler_g_state_dict'])
 
-        iteration=0
+        print(f"Training from checkpoint from iteration {start_epoch}")
 
-        for epoch in range(self.config.NUM_EPOCHS):
+        return self.generator, self.discriminator, self.opt_g, self.opt_d, self.scheduler_g, self.scheduler_d, start_epoch, remaining_epochs
+
+    def train(self, checkpoint_path=None):
+
+        if checkpoint_path and os.path.exists(checkpoint_path):
+            self.generator, self.discriminator, self.opt_g, self.opt_d, self.scheduler_g, self.scheduler_d, start_epoch, remaining_epochs = self.load_models_from_checkpoint(checkpoint_path)
+            print(f"Number of epochs: {self.config.NUM_EPOCHS}")
+            iteration = start_epoch
+        else:
+            remaining_epochs = self.config.NUM_EPOCHS
+            print(f"Starting training on {self.config.DEVICE}")
+            print(f"Number of epochs: {self.config.NUM_EPOCHS}")
+            print(f"Batch size: {self.config.BATCH_SIZE}")
+
+            iteration=0
+
+        for epoch in range(remaining_epochs):
             epoch_d_loss = 0
             epoch_g_loss = 0
 
