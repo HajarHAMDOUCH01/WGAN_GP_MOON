@@ -10,6 +10,8 @@ from models import create_models
 from data_loader import get_dataloader
 from trainer import WGANGPTrainer
 
+### parameters and command handling
+
 def main():
     config = Config()
     print("Loading dataset...")
@@ -25,7 +27,7 @@ def main():
     print(f"Discriminator parameters: {total_params_d:,}")
 
     trainer = WGANGPTrainer(generator, discriminator, dataloader, config)
-    trainer.train()
+    trainer.train(checkpoint_path="")
 
 def load_and_generate(checkpoint_path, num_samples=16):
     config = Config()
